@@ -1,0 +1,54 @@
+Las interrupciones o excepciones del programa son syscal, manejan un control de flujo, 
+porque se menten en el sistema operativo y modificn el flujo del programa.
+
+########## IMPRIMIR LAS HOJAS DEL DRIVE ############
+
+Los ponemos en orden:
+    
+    -jumps:
+        -condicionales  j
+        -incondicionales    beq, bne, ...
+    
+    -calls:
+        llamadas a funcion
+    
+    -exceptions:  syscall
+    
+#################### SUBRUTINAS ########################
+
+        dir: jal etiqueta    se guarda en $ra la direccion de la instruccion + 4
+                             soluciona todos los problemas co la pila        
+                             la etiqueta dir indica la direccion del momento
+                             
+        jr (jump register) espera un registro
+        
+        etiqueta:
+                ------------
+                ------------
+                ------------
+                ------------
+                ------------
+                jr $ra
+        
+    TODAS LAS INSTRUCCIONES DE ESTE PROCESADOS SON DESTINO, ORIGEN, ORIGEN
+
+LA PILA CRECE CON DIRECCIONES DECRECIENTES
+
+push: addi $sp, $sp, -4     #si quiero reservar espacio para una palabra
+                     -8     #si quiero reservar espacio para dos palabra
+      sw $a0, ($sp)         #para apilar algo en la pila
+            
+      addi $sp, $sp, -8 
+      sw $a0, 4($sp)
+      sw $a1, 0($sp)
+
+
+################ MEMORIA DINAMICA #################
+
+(Heap) Gestion de memoria
+
+sbrk <- funcion que pide bits de memoria
+
+################ PERFORMANCE ######################
+
+Comparar arquitecturas

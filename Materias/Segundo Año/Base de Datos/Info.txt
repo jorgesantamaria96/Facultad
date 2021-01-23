@@ -1,0 +1,5 @@
+Bases de Datos
+Este curso intensivo y eminentemente práctico está dividido en 2 partes. En la 1er. parte los alumnos recibirán los conocimientos teóricos sobre sistemas de bases de datos relacionales y comprenderán, mínimamente, las tareas y funciones que son requeridas por un administrador de base de datos en un entorno de producción.
+
+
+En la 2da. parte del curso se introduce al alumno al SQL, el lenguaje de Base de Datos Relacionales estándar de la industria, utilizando diversas herramientas desde distintos entornos. El Curso abarca la sintaxis SQL y la estructura de comandos de este lenguaje. Al final del curso, el alumno tendrá una apreciación de la simplicidad y poder del SQL, para manipular y consultar Base de Datos Relacionales.

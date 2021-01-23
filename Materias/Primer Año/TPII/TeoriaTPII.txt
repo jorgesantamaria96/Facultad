@@ -1,0 +1,323 @@
+####################################################
+################    TPII    ########################
+####################################################
+
+---------------- Datos Generales -------------------
+
+Un caracter es 1 byte, un entero son 2 bytes y un float son 4 bytes
+
+Despues del return no se puede escribir nada
+
+Hacer los malloc reservando y liberando en el mismo lugar, por ejemplo, para una cadena de caracteres,
+hacemos int n = strlen(cadena) y luego hacemos malloc(sizeof(char)*n)
+
+
+
+----------------------------------------------------
+
+
+################ PUNTERO GENERICO ##################
+
+    void *ptr;
+
+Restricciones:
+    1. No se pueden asignar direcciones de una constante
+    2. no pueden ser asignados a punteros a constante, por ejemplo:
+
+            int const x;
+            int const *p;
+            void *pg;
+            p = &x;
+            pg = p;  ¡¡¡¡ ERROR !!!!
+
+Ejemplo de punteros genericos:
+
+    int x = 1;
+    float r = 1.0;
+    void *vptr = &x;
+    
+    int main(){
+        *(int *) vptr = 2;  // casteo a puntero a entero a vptr y luego accedo a lo que hay en vptr
+        // con (int *) indico con que tipo de dato voy a trabajar
+        /* *vptr = 2 // esto no lo puedo hacer porque no coinciden los tipos */
+        
+        vptr = &r;
+        *(float *) vptr = 1.1;
+    }
+
+########### GESTION DE MEMORIA DINAMICA ############
+
+Sintaxis:
+    
+    void *malloc(size_t nro_de_bytes)
+    
+Para usarla:
+
+    (char *) ptr = (char *) malloc(1000); //memoria dinamica, donde 1000 es la cantidad de bytes
+    // memoria estatica: char m[1000];
+    
+Sintaxis:
+    
+    void free(void *puntero);
+    
+Para usarla:
+
+    free(puntero);
+    
+Ejemplo:
+    
+    int leerCantidad();
+    
+    void leer(int cantidad, int *numeros){
+        inr i;
+        for(i = 0; i < cantidad; i++){
+            printf("Ingrese un numero: ");
+            scanf("%d\n", numeros+i);
+        }
+    }
+    
+    void imprimir(int cantidad, int *numeros){
+        int i;
+        printf("Numeros: ");
+        for (i = 0; i < cantidad; i++){
+            printf("%d", *(numeros+i));
+        }
+    }
+    
+    int main(){
+        int cant = leerCantidad();
+        int *num = (int *)malloc(sizeof(int)*cant);
+        leer(cantidad, num);
+        free(num);
+        return 0;
+    }
+    
+Otro ejemplo, reservo espacio para (int **):
+
+    int main(){
+        int f, c, i, w;
+        int **n = NULL;
+        printf("Ingresar filas: ");
+        scanf("%d", &f);
+        
+        printf("Ingresar columnas: ");
+        scanf("%d", &c);
+        
+        // reservo para la cantidad de filas, arreglo unidimensional de largo f
+        n = (int **) malloc(sizeof(int *)*f);
+        
+        // reservo para cantidad de columnas
+        for(i = 0; i < f; i++){
+            n[i] = (int *) malloc(sizeof(int)*c); 
+        }
+        
+        // lleno la matriz con numeros random entre 1 y 10
+        for(i = 0; i < f; i++(){
+            for(w = 0; w < c; w++){
+                n[i][w] = 1 + rand()%9;
+            }
+        }
+        
+        // libero el espacio
+        for(i = 0; i < f; i++)
+            free(n[i]);
+        free(n);
+    }
+    
+############# REPASO ##################
+
+#include<stdio.h>
+#include<stdlib.h>
+
+int *f();
+
+int main(void){
+    int i = 5;
+    int k = 3;
+    int *pi;
+    pi = f();
+    printf("%d\n",*pi);
+    char arr[20];   // reserva 20 bytes luego del stack frame del main
+                    // con esto, me guardo las posiciones que ya use de f, y almaceno esa informacion en arr
+    arr[12] = 'H';  // con esto, piso informacion que ya estaba usada en la funcion anterior
+                    // y guardo una H en el bit 12 
+                    
+    printf("%d\n",*pi); // aca trato de mostrar y va a dar cualquier cosa porque estoy guardando una H en el lugar 
+                        // de memoria del bit 12, donde en esa posicion habia un 7
+    return EXIT_SUCCESS;
+}
+
+int *f(){
+    int a = 7;
+    int *pr = &a;
+    return pr;
+}
+
+
+----------- MEMORIA STACK --------------
+
+
+    -------------
+    
+    -------------
+                  0x120
+    -------------                   
+  pr    0x118     0x11c             |   
+    -------------                   |   
+  a       7       0x118             |   stack
+    -------------                   |   frame
+        ....      0x114             |   f()
+    -------------                   |
+        ....      0x110             |
+    -------------                   |
+        ....      0x10c             |          (aca guarda la direccion de memoria donde tengo que seguir al hacer return)
+    -------------
+  pi      ?       0x108             |
+    -------------                   |   stack
+  k       3       0x104             |   frame
+    -------------                   |   main
+  i       5       ox100             |
+    -------------
+
+    
+################## DEPURRAR #####################
+            --------- GDB ----------
+
+GDB -- GNU Debuger
+
+Para poder depurar con GDB tenemos que compilar nuestro programa con lo siguiente,
+por ejemplo, para hola.c:
+
+    $$ gcc hola.c -o hola
+    $$ pwd                              (print working directory)
+    $$ gcc hola.c -ggdb -o hola         (generalmente se usa este, aporta mas informacion)
+                  -gdb
+    $$ gdb ./hola                       (para depurar, uso el ejecutable)
+    > break main                        (para interrumpir en la funcion main, y de ahi ejecutar linea a linea)
+    > break prog.c:15                   (si tengo varios archivos ejecutandose, pongo nombre_programa:linea, puedo usar b, o breakpoint)
+    > run                               (esto hace que el programa se ejecute)
+    .
+    .
+    .
+    . breakpoint                        (cuando llegue al breakpoint, se frena)
+    > continue                          (hace que el programa se siga ehjecutando hasta el proximo breakpoint)
+    > n                                 (n es de next line, va mostrando linea a linea que es lo que estoy ejecutando)
+    > list                              (muestra 5 lineas hacia ariba y hacia abajo desde donde estamos parados)
+    > s                                 (s es de step over, para entrar en la funcion y poder ejecutar linea a linea)
+    >                                   (OJO cuando estamos con printf y apretamos s, nos va a ir a la libreria y muestra la funcion)
+    > print <var>                       (a la funcion print le paso una variable y veo lo que tiene dentro, direcciones, punteros, &, etc)
+    > print *ptr                        (muestra todo lo que tiene dentro el puntero, puede ser una cadena, un entero que cambia, etc)
+    > print arr[1]                      (muestra lo que hay en una posicion particular de un arreglo)
+    > print &a                          (muestra la direccion de una variable a)
+    
+    
+    
+Tenemos que definir puntos de ruptura en el codigo, para que se rompa en algun momento y probemos,
+con los printf podemos probar pero alteran mucho el programa, lo mejor es puntos de ruptura    
+    
+
+
+
+################# PUNTEROS A FUNCION ###########################S
+
+
+// Caso en el que la funcion no recibe parametros y no devuelve nada
+
+void funcion(){
+    printf("Se ha ingresado a la funcion");
+}
+
+int main(){
+    void *puntero_funcion();            //declaro un puntero generico de tipo void pero que se que va a una funcion
+    puntero_funcion = &funcion;         //le asigno la direccion de la variable
+    puntero_funcion();                  //llamo a la funcion
+    return 0;
+}
+
+
+
+
+// Si tiene parametros (argumentos de la funcion)
+
+void func(int valor1, int valor2){
+    printf("valor1: %d\n", valor1);
+    printf("valor2: %d\n", valor2);
+}
+
+int main(){
+    //declaro un puntero a funcion del tipo void pasandole los argumentos que me pide
+    void (*puntero_funcion)(int, int) = &func;
+    puntero_funcion(2,5);                               //realizo la llamada a funcion
+    return 0;
+}
+
+
+
+
+// En caso de que la funcion devuelva un entero
+
+int func(int valor1, int valor2){
+    printf("valor1: %d\n", valor1);
+    printf("valor2: %d\n", valor2);
+    return 0;
+}
+
+int main(){
+    int v;
+    
+    //declaro un puntero a funcion del tipo void pasandole los argumentos que me pide
+    void (*puntero_funcion)(int, int) = &func;
+    
+    //realizo la llamada a funcion
+    v = puntero_funcion(2,5);
+    
+    return 0;
+}
+
+
+
+// CASO MAS DIFICIL, funcion como parametro a otra funcion
+
+int suma(int a, int b){
+    return a+b;
+}
+
+int resta(int a, int b){
+    return a-b;
+}
+
+void funcion_principal(int a, int b, int (* funcion)(int,int)){
+    int resultado = funcion(a, b);
+    printf("Resultado: %d", resultado);
+}
+
+int main(){
+    int n1 = 5, n2 = 4;
+    printf("Suma: ");
+    funcion_principal(n1, n2, suma);
+    printf("Resta: ");
+    funcion_principal(n1, n2, resta);
+    return 0;
+}
+
+
+################################################################
+######################## ARCHIVOS ##############################
+################################################################
+
+# La idea es para trabajar con una base de datos en un archivo
+# Para poder trabajar con un archivo tenemos que cumplir con 3 cosas:
+    
+    -- Abrir el archivo
+            FILE *f;    # puntero de tipo archivo (creando el puntero)
+            f = fopen("archivo.dat","r")    # fopen devuelve un puntero a archivo.dat si pude abrirlo
+                                            # archivo.dat es el nombre del archivo
+                                            # "r" es el modo del archivo
+            # si el archivo no se abrio correctamente devuelve un puntero a NULL
+            # para esto podemos usas if (f == NULL) y hacer un printf para ver si no se abrio
+       
+        -.- Modos de acceso:
+                -) r (read): modo lectura. Lee desde el comienzo, si no existe el archivo, da error
+                -) w (write): modo escritura. Si el archivo no existe, lo crea; y si existe, borra su contenido
+                -) a (append): modo escritura. Si no existe, lo crea. Si existe, escribe desde el final
+                -) r+, w+, a+: lectura/escritura. Respetando los respectivos modos

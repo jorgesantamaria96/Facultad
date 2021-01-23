@@ -1,0 +1,15 @@
+Para practicar los temas de cambio de flujo se propone las siguientes actividades que utilizan saltos condicionales e incondicionales y llamadas al sistema:
+
+1-Elabore un menu con tres opciones y luego solicite que ingrese una opción mediante un número entre 0 y 3.
+Si el número es 0 deberá finalizar, colocando el mensaje "Terminado", si está entre la opción 1 a la 3 imprima un mensaje "Ingreso a la opción x\n", donde x debería ser 1, 2 o 3 y luego repita todo nuevamente. Cualquier otro número informará que eligió la opción incorrecta y volverá a solicitar que ingrese una opción.
+
+2-Ingrese una lista de 10 números e imprímala en sentido inverso
+
+3-Solicite que se ingresen n números que deberá almacenar en la memoria. Para ello solicite primero la cantidad que no deberá ser mayor que 40 y luego cada número hasta completar la cantidad solicita.
+A continuación eleborará una pirámide, de la siguiente forma. Si asumimos que entramos 5 números entonces primero imprimirá los mismos, y luego la suma entre ellos hasta que solo quede un número, como se muestra a continuación:
+5 2 3 1 4
+7 5 4 5
+12 9 9
+21 18
+39
+Se sugiere reutilizar el espacio en memoria donde originalmente está la lista ya que no se pide volver a reutilizar los mismos, de esa manera no es necesario reservar espacio para los filas posteriores.

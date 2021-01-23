@@ -1,0 +1,25 @@
+#######################################################
+#################### ALGORITMOS I #####################
+#######################################################
+
+Que es una estructura de datos? Una estructura de datos queda definida si damos:
+    -- El conjunto de valores que puede tomar,
+    -- Un conjunto de operaciones definidas sobre estos valores,
+    -- Un conjunto de propiedades que relacionan todo lo anterior.
+ 
+La aplicacion de funciones se denota con un espacio y se asocia a izquierda.
+
+Matematica          Pseudocódigo
+    f(x)                f x
+    f(x,x)              f x x
+    f(g(x))             f (g x)
+    f(x,g(y))           f x (g y)
+    f(x)g(y)            f x * g y
+
+La aplicacion tiene mayor precedencia que cualquier otro operador:
+    f x + y = (f x) + y
+
+Las funciones y sus argumentos deben empezar con minúscula, y pueden ser
+seguidos por cero o mas letras (mayúsculas o minúsculas), dígitos, guiones
+bajos y apóstrofes.
+
